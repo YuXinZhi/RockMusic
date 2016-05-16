@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/action_bar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true" >
+
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:padding="8dp"
+        android:src="@drawable/actionbar_icon" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/local"
+        android:layout_toRightOf="@+id/app_icon"
+        android:clickable="true"
+        android:gravity="center|left"
+        android:text="Music" />
+
+    <ImageView
+        android:id="@+id/local"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/favour"
+        android:clickable="true"
+        android:padding="8dp"
+        android:src="@drawable/actionbar_music" />
+
+    <ImageView
+        android:id="@+id/favour"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/internet"
+        android:clickable="true"
+        android:padding="8dp"
+        android:src="@drawable/actionbar_love" />
+
+    <ImageView
+        android:id="@+id/internet"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:padding="8dp"
+        android:src="@drawable/actionbar_internet" />
+
+
+</RelativeLayout>
