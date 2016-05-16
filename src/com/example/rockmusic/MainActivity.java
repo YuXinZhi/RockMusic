@@ -99,7 +99,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, S
 						mFavoriteButton.setImageResource(R.drawable.btn_love_prs);
 					}
 				}
-				// 收藏歌曲
+				// 收藏歌
 				((BaseFragment) mFragments.get(1)).onPraisedPressed();
 			}
 		});
