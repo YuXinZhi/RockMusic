@@ -8,11 +8,16 @@ import com.example.rockmusic.fragment.BaseFragment;
 import com.example.rockmusic.fragment.FavoriteMusicFragment;
 import com.example.rockmusic.fragment.InternetMusicFragment;
 import com.example.rockmusic.service.MusicPlayService;
+import com.example.rockmusic.service.MusicPlayService.MusicServiceBinder;
 import com.example.rockmusic.service.MusicPlayService.StateChangedListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.app.ActionBar;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -28,7 +33,7 @@ import android.widget.TextView;
 public class MainActivity extends FragmentActivity implements OnClickListener, StateChangedListener {
 
 	private MusicPlayService mMusicPlayService;
-
+	private ServiceConnection mServiceConnection;
 	// 导航栏
 	private ImageView mAppIconImageView, mLocalImageView, mFavouriteImageView, mInternetImageView;
 	private List<ImageView> mNavigatorViews;
@@ -38,7 +43,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, S
 
 	// 播放控制按钮
 	private ImageButton mPlayButton, mNextButton, mPreviousButton, mFavoriteButton;
-	
+
 	// 歌曲名
 	private TextView titleTextView;
 	// 专辑封面
@@ -60,6 +65,44 @@ public class MainActivity extends FragmentActivity implements OnClickListener, S
 		initControlButtons();
 		// 初始化PagerView各个页面
 		initPages();
+		// 绑定服务
+		bindToService();
+		// 启动服务
+		startService();
+	}
+
+	@Override
+	protected void onDestroy() {
+		// 解除与服务的绑定
+		unbindService(mServiceConnection);
+		super.onDestroy();
+	}
+
+	private void startService() {
+		final Intent intent = new Intent();
+		intent.setClass(MainActivity.this, MusicPlayService.class);
+		startService();
+	}
+
+	private void bindToService() {
+		mServiceConnection = new ServiceConnection() {
+
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+
+			}
+
+			// 服务连接建立时调用
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				MusicServiceBinder binder = (MusicServiceBinder) service;
+				mMusicPlayService = binder.getService();
+				mMusicPlayService.setActivityCallback(MainActivity.this);
+				// 更新
+				initPagerView();
+				onPlayStateChanged();
+			}
+		};
 	}
 
 	private void initPagerView() {
@@ -99,7 +142,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, S
 						mFavoriteButton.setImageResource(R.drawable.btn_love_prs);
 					}
 				}
-				// 收藏歌
+				// 收藏歌曲
 				((BaseFragment) mFragments.get(1)).onPraisedPressed();
 			}
 		});
@@ -159,9 +202,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, S
 
 	}
 
+	// 状态改变时调用
 	@Override
 	public void onPlayStateChanged() {
-
+		updateControlButtonBackground();
+		updateArtImage(mArtImageView);
+		updateTitle(mMusicPlayService.getCurrentTitle());
+		updateFavoriteImage();
 	}
 
 	@Override
